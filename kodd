@@ -1,0 +1,288 @@
+import speech_recognition as sr
+from datetime import datetime
+import webbrowser
+import time
+from gtts import gTTS
+from playsound import playsound
+import random
+import os
+import feedparser
+import googletrans
+from googletrans import Translator
+import pandas as pd
+import os
+import simpleaudio as sa
+import requests
+from bs4 import BeautifulSoup
+import pyautogui as py
+import time
+
+
+x = 2
+r = sr.Recognizer()
+
+def record(ask = False):
+    if ask:
+        speak(ask)
+    with sr.Microphone() as source:
+        audio = r.listen(source)
+        voice = ''
+        try:
+            voice = r.recognize_google(audio , language='tr-TR-Wavenet-D')
+        except sr.UnknownValueError:
+            print("Anlayamadım Efendim!")
+            wave_obj = sa.WaveObject.from_wave_file("C:/Users/Fearless/Desktop/JARVIS v0.1/bip.wav")
+            play_obj = wave_obj.play()
+            play_obj.wait_done()
+        except sr.RequestError:
+            speak("Jarvis Aktif Değil...")
+        return voice
+
+def response(voice):
+    if 'Merhaba' in voice:
+        wave_obj = sa.WaveObject.from_wave_file("C:/Users/Fearless/Desktop/JARVIS v0.1/sounds/sizedemerhabaefendim.wav")
+        play_obj = wave_obj.play()
+        play_obj.wait_done()
+    if 'saat kaç' in voice:
+        speak(datetime.now().strftime('%H:%M:%S:'))
+    if 'arama yap' in voice:
+        search = record('ne aramak istiyorsun')
+        url = 'https://www.google.com/search?q='+search
+        webbrowser.get().open(url)
+        speak(search + ' için bulduklarım')
+    if 'linke git' in voice:
+        linkb = record('link girin')
+        url = 'https://www.'+linkb +'.com'
+        webbrowser.get().open(url)
+        speak(linkb + ' sitesine gidiliyor')
+    if 'gücü kes' in voice:
+        exit()
+    if 'güçük ev' in voice:
+        exit()
+    if 'dur dur' in voice:
+        exit()
+    if 'durdur' in voice:
+        exit()
+    if 'Dur dur' in voice:
+        exit()
+    if 'Durdur' in voice:
+        exit()
+    if 'Metin belgesi oluştur' in voice:
+        filename = record('peki,ismi ne olacak')
+        dosya=open("C:/Users/Fearless/Desktop/JARVIS v0.1/projeler-txt/"+ filename+".txt","w")
+        filewrite = record('peki,oluşturdum,içinde ne yazsın')
+        dosya.write(filewrite)
+        speak(' tamam,'+filename +"adlı dosyanız hazır.jarvis klasörünün projeler-txt kısmında bulabilirsiniz.")
+    if 'Metin belgesini oku' in voice:
+        rfilename = record('tamam,ama hangisini')
+        rdosya=open("C:/Users/Fearless/Desktop/JARVIS v0.1/projeler-txt/"+ rfilename+".txt","r")
+        speak(' işte,'+rfilename +"'da bunlar yazıyor.")
+        print(rdosya.read())
+    if 'pay dosyası oluştur' in voice:
+        pyfname = record('peki,ismi ne olacak')
+        pydosya=open("C:/Users/Fearless/Desktop/JARVIS v0.1/projeler-py/"+ pyfname+".py","w")
+        speak(' tamam,'+pyfname +"adlı dosyanızı hazırladım,jarvis klasörünün projeler-py kısmında bulabilirsiniz.")
+    if 'Mal mısın' in voice:
+        speak('sana küstüm ben.')
+        kstmsonsz = record('Son diyeceğin bişey var mı')
+        speak('banane lan bidaha açılmayacam ben')
+        exit()
+    if 'hava kaç derece' in voice:
+        def hava():
+            parse = feedparser.parse("http://rss.accuweather.com/rss/liveweather_rss.asp?metric=1&locCode=EUR|TR|45300|MANISA|")
+            parse = parse["entries"][0]["summary"]
+            parse = parse.split()
+            print (parse[2], parse[4], parse[5])
+            speak("Manisa'da hava"+ parse[4]+ "derece")
+            return (hava)
+
+        hava()
+    if 'Jailbreak' in voice:
+        print('JailBreak Açılıyor...')
+        speak('Jailbreak Açılıyor')
+        webbrowser.get().open('https://www.roblox.com/games/606849621/NUKES-Jailbreak?refPageId=7b9efdef-8781-4cbd-8aa5-cfe050471cc9')
+    if "Minecraft'ı aç" in voice:
+        print("Minecraft Açılıyor...")
+        speak("Minecraft Açılıyor")
+        mc = open("C:/Users/Fearless/Desktop/oyunlar/Minecraftj.exe","w")
+    if "Türkçeyi İngilizceye çevir" in voice:
+        wave_obj = sa.WaveObject.from_wave_file("C:/Users/Fearless/Desktop/JARVIS v0.1/sounds/çeviricibaşlatılıyor.wav")
+        play_obj = wave_obj.play()
+        play_obj.wait_done()
+        wave_obj = sa.WaveObject.from_wave_file("C:/Users/Fearless/Desktop/JARVIS v0.1/sounds/türkçebirkelimegirin.wav")
+        play_obj = wave_obj.play()
+        play_obj.wait_done()
+        tkelime = record('')
+        translator = Translator()
+        sentence = tkelime
+        example = translator.translate(sentence)
+
+        print("Çevirilen Kelime: "+ example.origin)
+
+        print("Sonuç:"+ example.text)
+    if 'Metin belgesini kopyala' in voice:
+        wave_obj = sa.WaveObject.from_wave_file("C:/Users/Fearless/Desktop/JARVIS v0.1/sounds/tamamamahangisini.wav")
+        play_obj = wave_obj.play()
+        play_obj.wait_done()
+        cfilename = record('')
+        cdosya = open("C:/Users/Fearless/Desktop/JARVIS v0.1/projeler-txt/"+ cfilename+".txt","r")
+        ptext = (cdosya.read())
+        wave_obj = sa.WaveObject.from_wave_file("C:/Users/Fearless/Desktop/JARVIS v0.1/sounds/tamamkopyaladımyenidosyanınismineolacak.wav")
+        play_obj = wave_obj.play()
+        play_obj.wait_done()
+        pfilename = record('')
+        pdosya=open("C:/Users/Fearless/Desktop/JARVIS v0.1/projeler-txt/"+ pfilename+".txt","w")
+        pdosya.write(ptext)
+        wave_obj = sa.WaveObject.from_wave_file("C:/Users/Fearless/Desktop/JARVIS v0.1/sounds/tamamdırkopyalamaişlemibaşarılı.wav")
+        play_obj = wave_obj.play()
+        play_obj.wait_done()
+    if 'yönetici modunu Aktif et' in voice:
+        wave_obj = sa.WaveObject.from_wave_file("C:/Users/Fearless/Desktop/JARVIS v0.1/sounds/lütfensifregiriniz.wav")
+        play_obj = wave_obj.play()
+        play_obj.wait_done()
+        password = input("Şifre:")
+
+        if(str(password) == "722722"):
+            wave_obj = sa.WaveObject.from_wave_file("C:/Users/Fearless/Desktop/JARVIS v0.1/sounds/yöneticimoduaktifediliyor.wav")
+            play_obj = wave_obj.play()
+            play_obj.wait_done()
+            print('JARVIS EDITOR MODE ACTIVATED')
+        else:
+            speak('Yanlış Bir Şifre Girildi')
+            print('WRONG-PASSWORD')
+    if 'renkli yaz' in voice:
+        print("f")
+    if 'projeyi sil'in voice:
+        sfilename = record('Hangisini Sileceğimi De Söyleyecek misin?')
+        os.remove("C:/Users/Fearless/Desktop/JARVIS v0.1/projeler-txt/"+ sfilename+ ".txt")
+        speak(sfilename+ 'adlı dosyayı sildim,zaten bende sevmezdim o dosyayı. sildiğin iyi oldu.')
+        print('FILE DELETED...')
+    if 'projeyi bitir'in voice:
+        wave_obj = sa.WaveObject.from_wave_file("C:/Users/Fearless/Desktop/JARVIS v0.1/sounds/iyidehangisini.wav")
+        play_obj = wave_obj.play()
+        play_obj.wait_done()
+        fingfilename = record('')
+        fingfile = open("C:/Users/Fearless/Desktop/JARVIS v0.1/projeler-txt/"+ fingfilename+ ".txt","r")
+        fingread = (fingfile.read())
+        fedfile = open("C:/Users/Fearless/Desktop/JARVIS v0.1/finished-projects/"+ fingfilename+ ".txt","w")
+        fedfile.write(fingread)
+        fingfile.close()
+        fedfile.close()
+        os.remove("C:/Users/Fearless/Desktop/JARVIS v0.1/projeler-txt/"+ fingfilename+ ".txt")
+        speak(fingfilename+ 'adlı dosya düzenlemeye kapandı.')
+        print('FILE FINISHED...')
+    if 'Aktif misin' in voice:
+        wave_obj = sa.WaveObject.from_wave_file("C:/Users/Fearless/Desktop/JARVIS v0.1/hey.wav")
+        play_obj = wave_obj.play()
+        play_obj.wait_done()
+    if 'tablo' in voice:
+        koronatablo = 'https://covid19.saglik.gov.tr/'
+        rq = requests.get(koronatablo)
+        soup = BeautifulSoup(rq.content,"html.parser")
+
+        tablogünügen = soup.find_all("div",{"class":"takvim text-center"})
+        tablogünüfen = tablogünügen[0].text
+
+        crntestgen = soup.find_all("span",{"class":"buyuk-bilgi-l-sayi"})
+        crntestfen = crntestgen[0].text
+
+        crnvakagen = soup.find_all("li",{"class":"d-flex justify-content-between baslik-k-2 bg-koyu"})
+        crnvakafen = crnvakagen[0].text
+        crnvakafen = crnvakafen.replace(" ","")
+
+        crnvefatgen = soup.find_all("li",{"class":"d-flex justify-content-between baslik-k-2 bg-acik"})
+        crnvefatfen = crnvefatgen[1].text
+        crnvefatfen = crnvefatfen.replace(" ","")
+
+        crniyileşengen = soup.find_all("li",{"class":"d-flex justify-content-between baslik-k-2 bg-koyu"})
+        crniyileşenfen = crniyileşengen[1].text
+        crniyileşenfen = crniyileşenfen.replace(" ","")
+
+        speak(tablogünüfen)
+        speak("Bugünkü test sayısı"+ crntestfen)
+        speak(crnvakafen)
+        speak(crnvefatfen)
+        speak(crniyileşenfen)
+
+    if 'oyunda arkadaşım var mı' in voice:
+        rbxjail = 'https://www.roblox.com/games/1962086868/Tower-of-Hell'
+        rsrbxjail = requests.get(rbxjail)
+        rbxjailsoup = BeautifulSoup(rsrbxjail.content,"html.parser")
+        rbxjailoyundamıgen = rbxjailsoup.find_all("a",{"class":"btn-full-width btn-control-xs rbx-friends-game-server-join"})
+        rbxfen = rbxjailoyundamıgen[0].text
+        print(len(rbxfen))
+
+
+    if 'sunucum açık mı' in voice:
+        aternos = 'https://raidernw.aternos.me/'
+        aternosraider = requests.get(aternos)
+        aternosraidersoup = BeautifulSoup(aternosraider.content,"html.parser")
+        aternosgen = aternosraidersoup.find_all("span",{"class":"status-label offline"})
+        aternosfen = aternosgen[0].text
+
+        if aternosfen == "Online":
+            speak("Sunucunuz Açık")
+        else:
+            speak("Sunucunuz Kapalı")
+    if 'porçay' in voice:
+        webbrowser.get().open('https://www.youtube.com/?hl=tr&gl=TR')
+        speak('Bunu Yapmak İst.')
+        notwant = record('lütfen bunu bana yaptırma,porçay benden nefret edecek!')
+        if notwant == "Yap şunu":
+            speak('off. tamam.')
+            class Youtube():
+                co_close = (1775, 25)
+                co_search = (352, 96)
+                co_porcay = (374, 274)
+                co_video = (371, 552)
+                co_son = (550, 750)
+                co_dislike = (592, 694)
+                co_yorum = (130, 490)
+                co_yap = (825, 530)
+            def closePy():
+                py.click(Youtube.co_close)
+            def youtubeBot():
+                time.sleep(5)
+                py.click(Youtube.co_search)
+                py.typewrite("Porcay")
+                time.sleep(x)
+                py.keyDown('enter')
+                time.sleep(x)
+                py.keyUp('enter')
+                py.click(Youtube.co_porcay)
+                time.sleep(x)
+                py.click(Youtube.co_video)
+                time.sleep(x)
+                py.click(Youtube.co_dislike)
+                time.sleep(x)
+                py.scroll(-600)
+                time.sleep(x)
+                py.click(Youtube.co_yorum)
+                time.sleep(x)
+                py.typewrite('Erkan kim')
+                time.sleep(x)
+                py.click(Youtube.co_yap)
+                time.sleep(x)
+
+            closePy()
+            youtubeBot()
+            speak("Porçay Artık Benden Nefret Ediyor. küstüm sana.")
+def speak(string):
+    tts = gTTS(string,lang='tr')
+    rand = random.randint(1,10000)
+    file = 'audio-'+str(rand)+'.mp3'
+    tts.save(file)
+    playsound(file)
+    os.remove(file)
+
+
+
+
+wave_obj = sa.WaveObject.from_wave_file("C:/Users/Fearless/Desktop/JARVIS v0.1/sounds/dinleniyor.wav")
+play_obj = wave_obj.play()
+play_obj.wait_done()
+time.sleep(1)
+while 1:
+    voice = record()
+    print(voice)
+    response(voice)
